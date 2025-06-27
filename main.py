@@ -45,7 +45,7 @@ class GnomeControlExtension(Extension):
         panels = []
         try:
             # Get list of panel names from gnome-control-center
-            panel_list = subprocess.check_output([gcpath, "--list"])
+            panel_list = subprocess.check_output(["env", "XDG_CURRENT_DESKTOP=GNOME", gcpath, "--list"])
             # Get sorted list of panels without empty items and without
             # irrelevant help text
             panels = sorted([i.strip() for i in panel_list.split('\n')
@@ -124,7 +124,7 @@ class ItemEnterEventListener(EventListener):
         with open(usage_db, 'w') as db:
             db.write(json.dumps(usage_cache, indent=2))
 
-        return RunScriptAction('#!/usr/bin/env bash\n{} {}\n'.format(gcpath, b), None).run()
+        return RunScriptAction('#!/usr/bin/env bash\nenv XDG_CURRENT_DESKTOP=GNOME {} {}\n'.format(gcpath, b), None).run()
 
 
 def create_item(name, icon, keyword, description, on_enter):
